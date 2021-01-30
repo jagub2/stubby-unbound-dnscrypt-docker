@@ -1,14 +1,15 @@
 version: '3'
 services:
   stubby:
-    image: "mvance/stubby:latest"
+    build: ./stubby
     networks:
      - dns
     restart: unless-stopped
   unbound:
-    image: "mvance/unbound:1.13.0-stubby"
+    build: ./unbound
     depends_on:
-      - "stubby"    
+      - "stubby"
+      - "dnscrypt_proxy"
     ports:
      - "53:53/udp"
      - "53:53/tcp"
@@ -17,6 +18,11 @@ services:
     volumes:
       - ./unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro
     restart: unless-stopped
+  dnscrypt_proxy:
+    build: ./dnscrypt-proxy
+    restart: always
+    networks:
+     - dns
 
 networks:
   dns:

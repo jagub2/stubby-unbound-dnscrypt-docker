@@ -36,6 +36,10 @@ stubby_ip=$(ping -4 -c 1 stubby | head -n 1 | cut -d ' ' -f 3 | cut -d '(' -f 2 
 stubby_port=@8053
 stubby=$stubby_ip$stubby_port
 
+dnscrypt_ip=$(ping -4 -c 1 dnscrypt_proxy | head -n 1 | cut -d ' ' -f 3 | cut -d '(' -f 2 | cut -d ')' -f 1)
+dnscrypt_port=@5053
+dnscrypt=$dnscrypt_ip$dnscrypt_port
+
 if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
     sed \
         -e "s/@MSG_CACHE_SIZE@/${msg_cache_size}/" \
@@ -43,6 +47,7 @@ if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
         -e "s/@THREADS@/${threads}/" \
         -e "s/@SLABS@/${slabs}/" \
         -e "s/@STUBBY@/${stubby}/" \
+        -e "s/@DNSCRYPT@/${dnscrypt}/" \
         > /opt/unbound/etc/unbound/unbound.conf << EOT
 server:
     ###########################################################################
@@ -345,6 +350,7 @@ server:
         # Forward to Stubby
         name: "."
         forward-addr: @STUBBY@
+        forward-addr: @DNSCRYPT@
 
 remote-control:
   control-enable: no
