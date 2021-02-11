@@ -19,7 +19,9 @@ steps:
       pushd "$${REPO}" && \
       git fetch origin +refs/heads/master && \
       git checkout "${DRONE_COMMIT}" && \
-      docker-compose restart && \
+      docker-compose pull && \
+      docker-compose down && \
+      docker-compose up -d && \
       popd
       EOF
     - kill "$SSH_AGENT_PID"
