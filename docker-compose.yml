@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
   unbound:
     build: ./unbound
+    image: "mvance/unbound:1.13.1-stubby"
     depends_on:
       - "stubby"
       - "dnscrypt_proxy"
